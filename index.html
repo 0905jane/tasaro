@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tasaro - Create Your Own Bouquet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            color: #333333;
+            line-height: 1.6;
+
+            /* 🌌 피그마 2차 디자인 배경 그라데이션 완벽 적용 */
+            width: 100%;
+            min-height: 2542px;
+            background: linear-gradient(180deg, #10DFFF 0%, #E8FCFF 12.27%, #FFF 30%);
+            background-repeat: no-repeat;
+        }
+
+        /* 메인 레이아웃 컨테이너 */
+        main {
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 60px 24px;
+        }
+
+        /* 상단 로고 및 안내 헤더 */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        header .logo-link img {
+            width: 220px; 
+            height: auto;
+            margin-bottom: 16px;
+        }
+        header p {
+            font-size: 16px;
+            color: #4A4A4A;
+            letter-spacing: -0.3px;
+        }
+
+        /* 📦 피그마 테두리 스타일을 살린 그룹 카드 박스 */
+        .select-group {
+            background-color: #ffffff; 
+            border: 1px solid #10DFFF; 
+            padding: 35px 30px;
+            margin-bottom: 35px; 
+            box-shadow: 0 4px 20px rgba(16, 223, 255, 0.05);
+        }
+
+        .select-group h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #E60000; /* 시그니처 레드 포인트 */
+            margin-bottom: 24px;
+        }
+
+        /* 꽃 카드 정렬 가이드 */
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .select-group label {
+            display: inline-flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 135px; 
+            padding: 14px;
+            cursor: pointer; 
+            border: 1px solid #eeeeee;
+            background-color: #ffffff;
+            transition: all 0.25s ease-in-out;
+            position: relative;
+        }
+
+        /* 체크박스/라디오 디자인 숨김 */
+        .select-group label input[type="radio"],
+        .select-group label input[type="checkbox"] {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            accent-color: #E60000;
+        }
+
+        .select-group label img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover; 
+            margin-bottom: 12px;
+            transition: transform 0.25s ease-in-out;
+        }
+
+        .select-group label span {
+            font-size: 14px;
+            color: #555555;
+        }
+
+        /* 마우스 호버(Hover) 인터랙션 */
+        .select-group label:hover {
+            border-color: #10DFFF;
+            background-color: #f7fdff;
+        }
+        .select-group label:hover img {
+            transform: scale(1.03);
+        }
+
+        /* 꽃이 선택(Checked)되었을 때 스타일 */
+        .select-group label:has(input:checked) {
+            border-color: #E60000;
+            background-color: #fff6f6;
+        }
+
+        /* ➡️ 하단 버튼 스타일 */
+        .next-btn-container {
+            margin-top: 60px; 
+            text-align: center;
+        }
+        
+        .next-action-btn {
+            display: inline-block; 
+            text-decoration: none;
+            border: 1px solid #10DFFF;
+            padding: 16px 64px;
+            border-radius: 50px; 
+            background-color: #ffffff;
+            color: #E60000; 
+            font-size: 22px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 223, 255, 0.1);
+        }
+
+        .next-action-btn:hover {
+            background-color: #f0fbff;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(16, 223, 255, 0.25);
+        }
+
+        footer {
+            text-align: center; 
+            margin-top: 100px; 
+            padding-bottom: 40px;
+            color: #bbbbbb;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="intro.html" class="logo-link">
+            <img src="images/tasaro_logo.png" alt="tasaro logo">
+        </a>
+        <p>STEP 1. Select the flowers that capture your personal style.</p>
+    </header>
+
+    <main>
+        <section id="flower-selection">
+            
+            <div class="select-group">
+                <h3>Main Flower (Select 1)</h3>
+                <div class="options-container">
+                    <label>
+                        <input type="radio" name="main-flower" value="rose">
+                        <img src="images/main_rose.png" alt="Rose">
+                        <span>Rose</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="main-flower" value="sunflower">
+                        <img src="images/main_sunflower.png" alt="Sunflower">
+                        <span>Sunflower</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="main-flower" value="poppy">
+                        <img src="images/main_poppy.png" alt="Poppy">
+                        <span>Poppy</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="select-group">
+                <h3>Secondary Flower (Select up to 3)</h3>
+                <div class="options-container">
+                    <label>
+                        <input type="checkbox" name="sub-flower" value="ranunculus">
+                        <img src="images/sub_ranunculus.png" alt="Ranunculus">
+                        <span>Ranunculus</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="select-group">
+                <h3>Filler Flower (Select up to 2)</h3>
+                <div class="options-container">
+                    <label>
+                        <input type="checkbox" name="filler" value="lily">
+                        <img src="images/filler_lily.png" alt="Lily">
+                        <span>Lily</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="filler" value="alstroemeria">
+                        <img src="images/filler_alstroemeria.png" alt="Alstroemeria">
+                        <span>Alstroemeria</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="select-group">
+                <h3>Foliage & Greens (Select up to 2)</h3>
+                <div class="options-container">
+                    <label>
+                        <input type="checkbox" name="green" value="fern">
+                        <img src="images/green_fern.png" alt="Fern">
+                        <span>Fern</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="select-group">
+                <h3>Line Flower (Select 1)</h3>
+                <div class="options-container">
+                    <label>
+                        <input type="radio" name="line-flower" value="eucalyptus">
+                        <img src="images/line_eucalyptus.png" alt="Eucalyptus">
+                        <span>Eucalyptus</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <div class="next-btn-container">
+            <a href="packaging.html" class="next-action-btn">
+                Choose Packaging
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 tasaro. All rights reserved.</p>
+    </footer>
+
+</body>
+<script>
+        const nextButton = document.querySelector('.next-action-btn');
+
+        nextButton.addEventListener('click', function(event) {
+            
+            // 1. 각 항목에서 '체크된 것'들을 다 가져옵니다.
+            const mainFlower = document.querySelector('input[name="main-flower"]:checked');
+            
+            // 여러 개 선택 가능한 항목들은 하나라도 체크되었는지 확인하기 위해 가져옵니다.
+            const subFlowers = document.querySelectorAll('input[name="sub-flower"]:checked');
+            const fillerFlowers = document.querySelectorAll('input[name="filler"]:checked');
+            const greenFlowers = document.querySelectorAll('input[name="green"]:checked');
+            
+            const lineFlower = document.querySelector('input[name="line-flower"]:checked');
+
+            // ⚠️ [빈틈없는 검사] 모든 항목이 다 골라졌는지 하나씩 체크하기
+            if (!mainFlower) {
+                alert('Please select your Main Flower!');
+                event.preventDefault(); return;
+            }
+            if (subFlowers.length === 0) { // 개수가 0개라는 건 아무것도 안 골랐다는 뜻!
+                alert('Please select at least one Secondary Flower!');
+                event.preventDefault(); return;
+            }
+            if (fillerFlowers.length === 0) {
+                alert('Please select at least one Filler Flower!');
+                event.preventDefault(); return;
+            }
+            if (greenFlowers.length === 0) {
+                alert('Please select at least one Foliage & Green!');
+                event.preventDefault(); return;
+            }
+            if (!lineFlower) {
+                alert('Please select your Line Flower!');
+                event.preventDefault(); return;
+            }
+
+            // 2. 검사를 무사히 통과했다면, 이름(value)만 쏙쏙 뽑아서 보따리에 담기
+            const selectedSub = [];
+            subFlowers.forEach(f => selectedSub.push(f.value));
+
+            const selectedFiller = [];
+            fillerFlowers.forEach(f => selectedFiller.push(f.value));
+
+            const selectedGreen = [];
+            greenFlowers.forEach(f => selectedGreen.push(f.value));
+
+            const bouquetData = {
+                main: mainFlower.value,
+                sub: selectedSub,
+                filler: selectedFiller,
+                green: selectedGreen,
+                line: lineFlower.value
+            };
+
+            // 3. 브라우저 메모장(localStorage)에 저장!
+            localStorage.setItem('tasaroFlower', JSON.stringify(bouquetData));
+            
+            console.log('모든 꽃 저장 완료!', bouquetData);
+        });
+    </script>
+</body>
+</html>
+</html>

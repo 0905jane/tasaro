@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tasaro - Your Beautiful Bouquet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            color: #333333;
+            line-height: 1.6;
+
+            /* 🌌 이전 단계들과 완벽하게 이어지는 피그마 그라데이션 배경 */
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #10DFFF 0%, #E8FCFF 12.27%, #FFF 30%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* 메인 레이아웃 컨테이너 */
+        main {
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        /* 상단 헤더 */
+        header {
+            margin-bottom: 40px;
+        }
+        header .logo-link img {
+            width: 180px;
+            height: auto;
+            margin-bottom: 12px;
+        }
+        header p {
+            font-size: 15px;
+            color: #666666;
+        }
+
+        /* 🎨 꽃다발 캔버스 영역 (나중에 이미지가 겹쳐질 공간) */
+        .bouquet-canvas-container {
+            background-color: #ffffff;
+            border: 1px solid #10DFFF;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(16, 223, 255, 0.05);
+        }
+        .bouquet-canvas-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #E60000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .canvas-view {
+            width: 100%;
+            height: 380px;
+            background-color: #f9fdfd;
+            border: 1px dashed #a6f3ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative; /* 나중에 이미지들을 absolute로 겹치기 위한 기준점 */
+            overflow: hidden;
+        }
+        .canvas-placeholder {
+            color: #aaaaaa;
+            font-size: 14px;
+        }
+
+        /* 📋 선택 요약 텍스트 영역 */
+        .bouquet-summary {
+            margin-bottom: 50px;
+            padding: 0 10px;
+        }
+        .bouquet-summary h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 14px;
+        }
+        .bouquet-summary p {
+            font-size: 15px;
+            color: #666666;
+            word-break: keep-all;
+            line-height: 1.8;
+        }
+
+        /* 🛠️ 하단 액션 버튼 그룹 */
+        .action-button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .action-btn {
+            display: block;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* 이미지로 저장 버튼 */
+        .save-btn {
+            background-color: #E60000;
+            color: #ffffff;
+            border: 1px solid #E60000;
+        }
+        .save-btn:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+            transform: scale(1.02);
+        }
+
+        /* 링크 공유 버튼 */
+        .share-btn {
+            background-color: #ffffff;
+            color: #10DFFF;
+            border: 1px solid #10DFFF;
+        }
+        .share-btn:hover {
+            background-color: #f0fbff;
+            transform: scale(1.02);
+        }
+
+        /* 다시 만들기 버튼 */
+        .remake-btn {
+            background-color: #ffffff;
+            color: #777777;
+            border: 1px solid #cccccc;
+            margin-top: 10px;
+        }
+        .remake-btn:hover {
+            background-color: #fafafa;
+            color: #333333;
+            border-color: #cccccc;
+            transform: scale(1.02);
+        }
+
+        footer {
+            margin-top: 80px;
+            color: #bbbbbb;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <header>
+            <a href="intro.html" class="logo-link">
+                <img src="images/tasaro_logo.png" alt="tasaro logo">
+            </a>
+            <p>Your personalized bouquet has been beautifully crafted.</p>
+        </header>
+
+        <section class=\"bouquet-canvas-container\">
+            <h2>Bouquet Preview</h2>
+            <div class=\"canvas-view\" id=\"bouquetCanvas\">
+                <p class=\"canvas-placeholder\">[ Your Bouquet Image Layer Space ]</p>
+            </div>
+        </section>
+
+        <section class=\"bouquet-summary\">
+            <h3>"May your day be as bright as flowers."</h3>
+            <p id=\"bouquetDetails\">Loading your beautiful bouquet...</p>
+        </section>
+
+        <section class=\"action-button-group\">
+            <a href="#" class="action-btn save-btn" id="downloadBtn">
+                💾 Save as Image
+            </a>
+            <a href="#" class="action-btn share-btn" id="shareBtn">
+                🔗 Share Link
+            </a>
+            <a href="index.html" class="action-btn remake-btn">
+                🔄 Remake Bouquet
+            </a>
+        </section>
+
+        <footer>
+            <p>© 2026 tasaro. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. 브라우저 서랍(localStorage)에서 앞 페이지들이 저장한 보따리를 꺼내옵니다.
+            const savedData = localStorage.getItem('tasaroFlower');
+            const detailsText = document.getElementById('bouquetDetails');
+
+            // 2. 보따리가 비어있지 않다면 화면에 데이터를 뿌려줍니다.
+            if (savedData) {
+                // 글자 형식을 자바스크립트 객체(보따리)로 변환
+                const bouquet = JSON.parse(savedData);
+
+                // 여러 개 고를 수 있었던 체크박스 항목들을 쉼표(, )로 예쁘게 연결합니다.
+                const subText = bouquet.sub && bouquet.sub.length > 0 ? bouquet.sub.join(', ') : '';
+                const fillerText = bouquet.filler && bouquet.filler.length > 0 ? bouquet.filler.join(', ') : '';
+                const greenText = bouquet.green && bouquet.green.length > 0 ? bouquet.green.join(', ') : '';
+
+                // 3. 텍스트 문장 조립 (영문 첫 글자를 대문자로 예쁘게 다듬기)
+                let resultMessage = `Selected: ${capitalize(bouquet.main)} (Main)`;
+                
+                if (subText) resultMessage += `, ${capitalize(subText)} (Secondary)`;
+                if (fillerText) resultMessage += `, ${capitalize(fillerText)} (Filler)`;
+                if (greenText) resultMessage += `, ${capitalize(greenText)} (Foliage)`;
+                if (bouquet.line) resultMessage += `, ${capitalize(bouquet.line)} (Line)`;
+                
+                // 포장지와 리본 추가
+                resultMessage += `, ${capitalize(bouquet.outerPaper)} Paper (Outer), ${capitalize(bouquet.ribbon)} (Ribbon).`;
+
+                // 4. 가짜 텍스트 자리에 진짜 우리가 조립한 문장을 쏙 집어넣습니다!
+                detailsText.textContent = resultMessage;
+
+            } else {
+                // 첫 페이지부터 안 거치고 주소창에 주소만 쳐서 들어온 경우 예외 처리
+                detailsText.textContent = "No bouquet data found. Please start creating your own bouquet from the beginning!";
+            }
+        });
+
+        // 영어 단어들의 첫 글자만 대문자로 바꿔주는 고마운 함수 (예: kraft -> Kraft)
+        function capitalize(str) {
+            if (!str) return '';
+            return str.replace(/\b[a-z]/g, char => char.toUpperCase());
+        }
+    </script>
+</body>
+</html>
