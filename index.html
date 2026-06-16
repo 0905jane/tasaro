@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasaro - Start Creating</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600&family=Red+Rose:wght@400&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --tasaro-red: #ff0000;
+            --sky: #10dfff;
+            --soft-sky: #a6f3ff;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Pretendard', Arial, sans-serif;
+            color: var(--tasaro-red);
+            background: linear-gradient(180deg, var(--sky) 0%, var(--soft-sky) 3%, #fff 6.741%);
+            overflow: hidden;
+        }
+
+        .intro-page {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        .brand {
+            position: absolute;
+            top: 0;
+            left: calc(50% - 168px);
+            color: var(--tasaro-red);
+            font-family: 'Red Rose', serif;
+            font-size: 100px;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .intro-content {
+            position: absolute;
+            inset: 0;
+        }
+
+        .intro-copy {
+            position: absolute;
+            top: 529px;
+            left: calc(50% - 555px);
+            color: var(--tasaro-red);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: normal;
+            white-space: nowrap;
+        }
+
+        .start-btn {
+            position: absolute;
+            top: calc(50% + 0.5px);
+            left: calc(50% + 396px);
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 40px;
+            border: 1px solid var(--tasaro-red);
+            border-radius: 50px;
+            background: #fff;
+            color: var(--tasaro-red);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: normal;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 160ms ease, transform 160ms ease;
+        }
+
+        .start-btn:hover {
+            background: #fffafa;
+            transform: translate(-50%, -50%) translateY(-1px);
+        }
+
+        .start-btn:focus-visible {
+            outline: 3px solid rgba(16, 223, 255, 0.65);
+            outline-offset: 5px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                overflow: auto;
+            }
+
+            .intro-page {
+                min-height: 100svh;
+            }
+
+            .brand {
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: clamp(64px, 22vw, 100px);
+            }
+
+            .intro-copy {
+                top: auto;
+                left: 28px;
+                bottom: 192px;
+                max-width: calc(100vw - 56px);
+                font-size: 18px;
+                white-space: normal;
+            }
+
+            .start-btn {
+                top: auto;
+                left: 28px;
+                bottom: 90px;
+                transform: none;
+                padding: 18px 38px;
+                font-size: 20px;
+            }
+
+            .start-btn:hover {
+                transform: translateY(-1px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="intro-page" aria-labelledby="page-title">
+        <h1 class="brand" id="page-title">Tasaro</h1>
+
+        <section class="intro-content" aria-label="Start creating your bouquet">
+            <p class="intro-copy">
+                is your personal online flower shop.<br>
+                Build a bouquet full of your style.
+            </p>
+
+            <a href="builder.html" class="start-btn">Start Creating</a>
+        </section>
+    </main>
+
+</body>
+</html>
