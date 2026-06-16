@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasaro - Bouquet Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500&family=Red+Rose:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --red: #ff0000;
+            --blue: #0400ff;
+            --purple: #6f00ff;
+            --top-sky: #10dfff;
+            --right-panel: #f0fdff;
+            --option-gray: #d9d9d9;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            min-width: 1120px;
+            min-height: 4543px;
+            font-family: 'Pretendard', Arial, sans-serif;
+            color: var(--blue);
+            background: #ffffff;
+        }
+
+        button {
+            color: inherit;
+            font: inherit;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .builder-page {
+            position: relative;
+            min-height: 4543px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .top-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 168px;
+            background: linear-gradient(180deg, #10dfff 0%, #cef8ff 59.615%, #f2fdff 89.423%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .brand {
+            position: fixed;
+            top: 0;
+            left: calc(50% - 168px);
+            z-index: 6;
+            color: var(--red);
+            font-family: 'Red Rose', serif;
+            font-size: 100px;
+            font-weight: 400;
+            line-height: normal;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .preview-rail {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: calc(50% + 35px);
+            z-index: 0;
+            background: var(--right-panel);
+            pointer-events: none;
+        }
+
+        .preview-wrap {
+            position: fixed;
+            top: 145px;
+            left: max(899px, calc(50% + 35px));
+            z-index: 3;
+            width: 653px;
+        }
+
+        .structure-tabs {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            width: 653px;
+            height: 27px;
+            margin-bottom: 12px;
+        }
+
+        .structure-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 27px;
+            height: 27px;
+            border: 1px solid var(--red);
+            border-radius: 50%;
+            color: var(--red);
+            background: #ffffff;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .structure-tab.is-active {
+            color: #ffffff;
+            background: var(--red);
+        }
+
+        .preview-frame {
+            width: 653px;
+            height: 653px;
+            border: 1px solid var(--red);
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        #bouquetSvg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .selected-copy {
+            width: 500px;
+            margin-top: 54px;
+            color: var(--red);
+            font-size: 20px;
+            line-height: normal;
+            white-space: pre-wrap;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 500px;
+            margin-top: 41px;
+            margin-left: 76px;
+        }
+
+        .outline-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 64px;
+            padding: 20px 40px;
+            border: 1px solid var(--red);
+            border-radius: 50px;
+            color: var(--red);
+            background: #ffffff;
+            font-size: 20px;
+            line-height: normal;
+            white-space: nowrap;
+            transition: background 140ms ease, transform 140ms ease;
+        }
+
+        .outline-btn:hover {
+            background: #fffafa;
+            transform: translateY(-1px);
+        }
+
+        .share-status {
+            width: 500px;
+            min-height: 20px;
+            margin-top: 14px;
+            margin-left: 76px;
+            color: var(--red);
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+            width: 597px;
+            margin-left: max(40px, calc(50% - 688px));
+            padding-top: 149px;
+            padding-bottom: 160px;
+        }
+
+        .step-title {
+            color: var(--blue);
+            font-size: 25px;
+            font-weight: 500;
+            line-height: normal;
+            white-space: nowrap;
+        }
+
+        .step-title.package-title {
+            margin-top: 152px;
+            color: var(--purple);
+        }
+
+        .flower-groups,
+        .package-groups {
+            margin-top: 40px;
+        }
+
+        .option-group {
+            width: 597px;
+            padding: 20px 0;
+            border-bottom: 1px solid currentColor;
+        }
+
+        .option-group h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 14px;
+            row-gap: 12px;
+        }
+
+        .option-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 200px;
+            min-height: 245px;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .option-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .option-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            transition: transform 140ms ease;
+        }
+
+        .option-card:hover .option-image img {
+            transform: scale(1.06);
+        }
+
+        .package-swatch {
+            width: 180px;
+            height: 180px;
+            border: 1px solid rgba(111, 0, 255, 0.24);
+            border-radius: 999px;
+        }
+
+        .package-section .option-grid {
+            grid-template-columns: repeat(5, 90px);
+            column-gap: 30px;
+            row-gap: 20px;
+            width: 570px;
+        }
+
+        .package-section .option-card {
+            align-items: center;
+            width: 90px;
+            min-height: 114px;
+            gap: 12px;
+        }
+
+        .package-section .package-swatch {
+            width: 90px;
+            height: 90px;
+        }
+
+        .package-section .option-label {
+            justify-content: center;
+            width: 90px;
+        }
+
+        .package-section .option-name {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.8;
+        }
+
+        .radio-dot {
+            width: 12px;
+            height: 12px;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            background: #ffffff;
+        }
+
+        .option-card.is-selected .radio-dot {
+            border: 4px solid currentColor;
+        }
+
+        .option-name {
+            font-size: 12px;
+            line-height: normal;
+            white-space: nowrap;
+        }
+
+        .package-section {
+            color: var(--purple);
+        }
+
+        @media (max-width: 1120px) {
+            body {
+                min-width: 0;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            .builder-page {
+                min-height: 100vh;
+                padding-bottom: 64px;
+            }
+
+            .brand {
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: clamp(64px, 18vw, 100px);
+            }
+
+            .preview-rail {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                width: 100%;
+                margin-top: 125px;
+                padding: 32px 20px 40px;
+            }
+
+            .preview-wrap {
+                position: relative;
+                top: auto;
+                left: auto;
+                width: min(653px, 100%);
+                margin: 0 auto;
+            }
+
+            .structure-tabs,
+            .preview-frame {
+                width: 100%;
+            }
+
+            .preview-frame {
+                height: auto;
+                aspect-ratio: 1;
+            }
+
+            .selected-copy,
+            .action-row,
+            .share-status {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .left-content {
+                width: min(597px, calc(100% - 40px));
+                margin: 0 auto;
+                padding-top: 42px;
+            }
+
+            .option-group,
+            .option-grid {
+                width: 100%;
+            }
+
+            .option-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                column-gap: 12px;
+            }
+
+            .option-card {
+                width: 100%;
+            }
+
+            .option-image,
+            .package-swatch {
+                width: min(180px, 100%);
+                height: auto;
+                aspect-ratio: 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .option-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .outline-btn {
+                min-height: 56px;
+                padding: 16px 24px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="builder-page">
+        <div class="top-gradient" aria-hidden="true"></div>
+        <a class="brand" href="intro.html" aria-label="Go to intro">Tasaro</a>
+
+        <aside class="preview-rail" aria-label="Bouquet preview"></aside>
+        <section class="preview-wrap" aria-label="Live bouquet preview">
+            <div class="structure-tabs" id="structureTabs" aria-label="Choose bouquet structure"></div>
+
+            <div class="preview-frame">
+                <svg id="bouquetSvg" width="1000" height="1000" viewBox="0 0 653 653" role="img" aria-label="Bouquet preview"></svg>
+            </div>
+
+            <p class="selected-copy" id="selectedCopy"></p>
+
+            <div class="action-row">
+                <button class="outline-btn" type="button" id="saveImage">Save as Image</button>
+                <button class="outline-btn" type="button" id="shareLink">Share Link</button>
+            </div>
+            <p class="share-status" id="shareStatus" aria-live="polite"></p>
+        </section>
+
+        <section class="left-content" aria-label="Bouquet choices">
+            <h1 class="step-title">step 1. Choose your flower</h1>
+            <div class="flower-groups" id="flowerGroups"></div>
+
+            <h1 class="step-title package-title">step 2. Choose your package</h1>
+            <div class="package-groups package-section" id="packageGroups"></div>
+        </section>
+    </main>
+
+    <script>
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const XLINK_NS = 'http://www.w3.org/1999/xlink';
+        const IMAGE_PATHS = {
+            mainRed: 'images/main_red.png',
+            mainYellow: 'images/main_yellow.png',
+            mainBlue: 'images/main_blue.png',
+            mainSky: 'images/main_sky.png',
+            mainGreen: 'images/main_green.png',
+            mainOrange: 'images/main_orange.png',
+            secondaryRed: 'images/secondary_red.png',
+            secondaryWhite: 'images/secondary_white.png',
+            secondaryGreen: 'images/secondary_green.png',
+            fillerRed: 'images/filler_red.png',
+            fillerYellow: 'images/filler_yellow.png',
+            fillerGreen: 'images/filler_green.png',
+            linerBlue: 'images/liner_blue.png',
+            linerGreen: 'images/liner_green.png',
+            linerSky: 'images/liner_sky.png',
+            greenBlue: 'images/green_blue.png',
+            greenGreen: 'images/green_green.png',
+            greenWhite: 'images/green_white.png'
+        };
+
+        const FLOWER_OPTIONS = [
+            {
+                key: 'main',
+                title: 'Main Flower (Choose 1)',
+                color: '#0400ff',
+                options: [
+                    { id: 'main-red', name: 'Red Main', image: IMAGE_PATHS.mainRed },
+                    { id: 'main-yellow', name: 'Yellow Main', image: IMAGE_PATHS.mainYellow },
+                    { id: 'main-blue', name: 'Blue Main', image: IMAGE_PATHS.mainBlue },
+                    { id: 'main-sky', name: 'Sky Main', image: IMAGE_PATHS.mainSky },
+                    { id: 'main-green', name: 'Green Main', image: IMAGE_PATHS.mainGreen },
+                    { id: 'main-orange', name: 'Orange Main', image: IMAGE_PATHS.mainOrange }
+                ]
+            },
+            {
+                key: 'secondary',
+                title: 'Secondary Flower (Choose 1)',
+                color: '#0400ff',
+                options: [
+                    { id: 'secondary-red', name: 'Red Secondary', image: IMAGE_PATHS.secondaryRed },
+                    { id: 'secondary-white', name: 'White Secondary', image: IMAGE_PATHS.secondaryWhite },
+                    { id: 'secondary-green', name: 'Green Secondary', image: IMAGE_PATHS.secondaryGreen }
+                ]
+            },
+            {
+                key: 'filler',
+                title: 'Filler (Choose 1)',
+                color: '#0400ff',
+                options: [
+                    { id: 'filler-red', name: 'Red Filler', image: IMAGE_PATHS.fillerRed },
+                    { id: 'filler-yellow', name: 'Yellow Filler', image: IMAGE_PATHS.fillerYellow },
+                    { id: 'filler-green', name: 'Green Filler', image: IMAGE_PATHS.fillerGreen }
+                ]
+            },
+            {
+                key: 'liner',
+                title: 'Liner (Choose 1)',
+                color: '#0400ff',
+                options: [
+                    { id: 'liner-blue', name: 'Blue Liner', image: IMAGE_PATHS.linerBlue },
+                    { id: 'liner-green', name: 'Green Liner', image: IMAGE_PATHS.linerGreen },
+                    { id: 'liner-sky', name: 'Sky Liner', image: IMAGE_PATHS.linerSky }
+                ]
+            },
+            {
+                key: 'green',
+                title: 'Green (Choose 1)',
+                color: '#0400ff',
+                options: [
+                    { id: 'green-blue', name: 'Blue Green', image: IMAGE_PATHS.greenBlue },
+                    { id: 'green-green', name: 'Green Leaf', image: IMAGE_PATHS.greenGreen },
+                    { id: 'green-white', name: 'White Green', image: IMAGE_PATHS.greenWhite }
+                ]
+            }
+        ];
+
+        const PACKAGE_OPTIONS = [
+            {
+                key: 'outer',
+                title: 'Outer (Choose 1)',
+                color: '#6f00ff',
+                options: [
+                    { id: 'white', name: 'White', color: '#ffffff', border: '#6f00ff' },
+                    { id: 'cream', name: 'Cream', color: '#fffdea', border: '#6f00ff' },
+                    { id: 'blush', name: 'Blush', color: '#ffe7e7', border: '#6f00ff' },
+                    { id: 'green', name: 'Green', color: '#008648' },
+                    { id: 'yellow', name: 'Yellow', color: '#ffb700' },
+                    { id: 'red', name: 'Red', color: '#ff1a1a' },
+                    { id: 'black', name: 'Black', color: '#111111' },
+                    { id: 'checker-small', name: 'Small Check', color: '#ffffff', pattern: 'checker-small' },
+                    { id: 'checker-large', name: 'Large Check', color: '#ffffff', pattern: 'checker-large' },
+                    { id: 'diagonal-stripe', name: 'Diagonal Stripe', color: '#ffffff', pattern: 'diagonal-stripe' },
+                    { id: 'dot-grid', name: 'Dot Grid', color: '#ffffff', pattern: 'dot-grid' }
+                ]
+            },
+            {
+                key: 'inner',
+                title: 'Inner (Choose 1)',
+                color: '#6f00ff',
+                options: [
+                    { id: 'soft-gray', name: 'Soft Gray', color: '#efefef' },
+                    { id: 'white', name: 'White', color: '#ffffff' },
+                    { id: 'cream', name: 'Cream', color: '#fff8dd' },
+                    { id: 'mint', name: 'Mint', color: '#edfff3' },
+                    { id: 'sky', name: 'Sky', color: '#ecfbff' },
+                    { id: 'blush', name: 'Blush', color: '#fff1f6' },
+                    { id: 'yellow', name: 'Yellow', color: '#fff6aa' },
+                    { id: 'green', name: 'Green', color: '#d7ffe4' },
+                    { id: 'checker-soft', name: 'Soft Check', color: '#ffffff', pattern: 'checker-soft' },
+                    { id: 'dot-soft', name: 'Soft Dot', color: '#ffffff', pattern: 'dot-soft' }
+                ]
+            },
+            {
+                key: 'ribbon',
+                title: 'Ribbon (Choose 1)',
+                color: '#6f00ff',
+                options: [
+                    { id: 'blue', name: 'Blue', color: '#0400ff' },
+                    { id: 'red', name: 'Red', color: '#ff0000' },
+                    { id: 'violet', name: 'Violet', color: '#6f00ff' },
+                    { id: 'green', name: 'Green', color: '#008648' },
+                    { id: 'yellow', name: 'Yellow', color: '#ffb700' },
+                    { id: 'pink', name: 'Pink', color: '#ff7cc8' },
+                    { id: 'orange', name: 'Orange', color: '#ff7a00' },
+                    { id: 'sky', name: 'Sky', color: '#10dfff' },
+                    { id: 'black', name: 'Black', color: '#111111' },
+                    { id: 'white', name: 'White', color: '#ffffff', border: '#6f00ff' }
+                ]
+            }
+        ];
+
+        const PAPER_PATHS = {
+            1: {
+                outer: {
+                    viewBox: [0, 0, 478.671, 508.043],
+                    d: 'M0.432957 254.208L183.079 381.492L122.409 465.867C124.95 469.255 138.609 480.288 172.914 497.314C207.22 514.34 343.278 508.444 381.289 494.256L287.584 389.433L478.171 118.576C281.867 48.3736 307.342 -2.13175 212.302 0.409408C67.7737 4.27381 31.1387 206.561 0.432957 254.208Z'
+                },
+                inner: {
+                    viewBox: [0, 0, 458.655, 396.026],
+                    d: 'M0.450414 146.536L223.755 271.053L151.967 358.405C154.508 361.794 168.167 372.827 202.473 389.852C236.778 406.878 321.378 382.758 359.389 368.57L293.319 282.171L458.177 66.8071C415.507 43.619 306.406 -2.12188 211.367 0.419278C116.327 2.96044 31.1561 98.8893 0.450414 146.536Z'
+                }
+            },
+            2: {
+                outer: {
+                    viewBox: [0, 0, 431.187, 515.127],
+                    d: 'M0.405646 190.583L210.359 352.602L142.863 466.263C145.252 470.672 158.095 485.028 190.349 507.181C222.604 529.335 302.145 497.951 337.884 479.489L275.764 367.068L430.765 86.8409C390.646 56.669 288.068 -2.84823 198.711 0.458279C109.354 3.76479 29.2755 128.586 0.405646 190.583Z'
+                },
+                inner: {
+                    viewBox: [0, 0, 284.731, 486.165],
+                    d: 'M0.382555 97.2113L146.118 346.298L101.778 463.995C104.386 467.472 113.655 485.839 152.965 485.839C190.784 485.839 177.851 485.404 216.866 470.841L188.502 340.104L284.355 140.247C248.817 89.7127 243.666 -2.22789 146.118 0.380353C48.5698 2.98859 31.8988 48.3069 0.382555 97.2113Z'
+                }
+            },
+            3: {
+                outer: {
+                    viewBox: [0, 0, 619.777, 609.534],
+                    d: 'M0.428977 203.805L263.535 426.809L151.707 549.07C154.315 552.548 168.334 563.872 203.546 581.347C238.757 598.822 393.73 618.732 432.744 604.169L351.889 437.242L619.234 297.049C385.144 62.9598 475.128 27.4226 228.65 1.3402C81.0772 -14.276 31.9452 154.9 0.428977 203.805Z'
+                },
+                inner: {
+                    viewBox: [0, 0, 589.003, 513.822],
+                    d: 'M0.462446 233.836L273.023 385.55L199.341 475.209C201.949 478.686 215.968 490.01 251.179 507.485C286.391 524.961 373.223 500.204 412.238 485.641L344.424 396.961L588.62 225.033C537.76 65.2785 329.818 -2.20957 232.27 0.398672C83.9261 4.36508 31.9787 184.932 0.462446 233.836Z'
+                }
+            },
+            4: {
+                outer: {
+                    viewBox: [0, 0, 588.972, 579.029],
+                    d: 'M0.43978 250.561L245.614 413.994L152.37 534.88C154.978 538.607 207.795 545.502 243.006 564.228C278.217 582.955 403.521 582.979 442.536 567.373L355.812 429.716L588.598 241.128C537.737 69.9307 329.795 -2.39118 232.247 0.403875C83.9034 4.65438 31.956 198.154 0.43978 250.561Z'
+                },
+                inner: {
+                    viewBox: [0, 0, 491.337, 516.778],
+                    d: 'M0.451026 260.918L199.329 388.506L125.646 478.164C128.255 481.642 142.274 492.966 177.485 510.441C212.696 527.916 299.529 503.16 338.544 488.597L270.73 399.917L490.8 121.706C289.313 49.6505 315.461 -2.18802 217.913 0.420215C69.5693 4.38662 31.9672 212.014 0.451026 260.918Z'
+                }
+            }
+        };
+
+        const TEMPLATES = {
+            1: {
+                scale: 0.63529,
+                paper: {
+                    outer: [145, 94, 752, 798.7026],
+                    inner: [112, 264.8398, 720.5, 622.3779]
+                },
+                stems: [
+                    [531, 467, 531, 925, 21],
+                    [600, 510, 690, 920, 22],
+                    [535, 555, 460, 930, 22]
+                ],
+                greens: [
+                    [514, 290, 110, 302, 0],
+                    [409, 420, 110, 302, -26.61],
+                    [329, 549, 110, 302, -73.35],
+                    [649, 497, 110, 302, 25.71]
+                ],
+                liners: [
+                    [602, 226, 45, 280, 14.65],
+                    [620, 378, 45, 280, 14.65],
+                    [386, 356, 45, 280, -20.9],
+                    [316, 524, 45, 280, -48.38]
+                ],
+                secondary: [
+                    [251.5, 378.5, 119],
+                    [531, 415, 118],
+                    [462, 500, 118],
+                    [567.5, 254.5, 105],
+                    [392.5, 288.5, 89]
+                ],
+                main: [
+                    [620, 357, 168],
+                    [362, 479, 142]
+                ],
+                filler: [
+                    [505, 234, 54],
+                    [454, 399, 54],
+                    [264, 496, 54],
+                    [219, 520, 54],
+                    [491, 554, 54],
+                    [639, 496, 54],
+                    [569, 177, 54],
+                    [569, 288, 54]
+                ],
+                ribbon: [516.8, 700.8, 187.7, 29.55, 3.86]
+            },
+            2: {
+                scale: 0.65206,
+                paper: {
+                    outer: [30, 56, 902, 887],
+                    inner: [139, 94, 752, 791.5312]
+                },
+                stems: [
+                    [496, 492, 496, 921, 75],
+                    [652, 501, 738, 921, 22],
+                    [495, 542, 375, 920, 22]
+                ],
+                greens: [
+                    [435, 412, 116, 282, -16],
+                    [351, 615, 105, 272, -60],
+                    [858, 384, 115, 300, 38]
+                ],
+                liners: [
+                    [326, 406, 44, 284, -20.9],
+                    [328, 531, 45, 280, -48.38],
+                    [621, 348, 45, 280, 14.65],
+                    [892, 365, 45, 290, 43]
+                ],
+                secondary: [
+                    [619.5, 455.5, 119],
+                    [397.5, 208.5, 105],
+                    [508, 455, 118]
+                ],
+                main: [
+                    [332, 308, 142],
+                    [704, 437, 142],
+                    [518, 357, 168],
+                    [379, 478, 142]
+                ],
+                filler: [
+                    [207, 315, 54],
+                    [779, 329, 54],
+                    [569, 261, 54],
+                    [647, 330, 54],
+                    [403, 363, 54],
+                    [330, 551, 54],
+                    [542, 535, 54],
+                    [258, 366, 54]
+                ],
+                ribbon: [493.5, 704, 200.8, 30.43, 3.86]
+            },
+            3: {
+                scale: 0.65206,
+                paper: {
+                    outer: [133, 121, 660, 789],
+                    inner: [251, 144.4165, 435.5, 744.5834]
+                },
+                stems: [
+                    [508, 496, 508, 925, 21],
+                    [624, 505, 690, 921, 22],
+                    [508, 524, 470, 945, 22]
+                ],
+                greens: [
+                    [535.5, 324.5, 96, 300, 0],
+                    [421.3, 470, 110, 302, -26.61]
+                ],
+                liners: [
+                    [411.8, 271.4, 40, 284, -14.73],
+                    [735.3, 398.4, 45, 270, 29.14],
+                    [391.4, 372.9, 45, 280, -20.9]
+                ],
+                secondary: [
+                    [544, 254.5, 105],
+                    [445.5, 510, 118]
+                ],
+                main: [
+                    [513.5, 391, 168]
+                ],
+                filler: [
+                    [629.5, 492, 54],
+                    [394.5, 240, 54],
+                    [565.5, 463, 54],
+                    [430.5, 399, 54],
+                    [348.5, 319, 54]
+                ],
+                ribbon: [505.8, 674.8, 125.8, 37.66, 3.86]
+            },
+            4: {
+                scale: 0.65206,
+                paper: {
+                    outer: [14, 37.445, 949, 933.783],
+                    inner: [12.5, 98.389, 902, 786.998]
+                },
+                stems: [
+                    [476, 496, 476, 924, 75],
+                    [633, 503, 718, 912, 22],
+                    [477, 544, 358, 925, 22]
+                ],
+                greens: [
+                    [365, 419, 135, 340, -16.61],
+                    [259, 619, 110, 300, -59.91],
+                    [862, 382, 112, 326, 37.9]
+                ],
+                liners: [
+                    [352, 333, 42, 300, -20.9],
+                    [572, 336, 44, 282, 14.65],
+                    [835, 276, 45, 318, 29.14],
+                    [746, 428, 42, 230, 31.26]
+                ],
+                secondary: [
+                    [809.5, 375.5, 89],
+                    [396.5, 209.5, 105],
+                    [559, 457, 88],
+                    [368, 422, 118],
+                    [170, 355, 118],
+                    [269.5, 278.5, 89],
+                    [646.5, 234.5, 89],
+                    [735.5, 340.5, 89],
+                    [684.5, 502.5, 119]
+                ],
+                main: [
+                    [351, 308, 142],
+                    [723, 437, 142],
+                    [537, 357, 168],
+                    [263, 444, 142],
+                    [458.5, 519.5, 163]
+                ],
+                filler: [
+                    [226, 315, 54],
+                    [846, 336, 54],
+                    [591, 283, 54],
+                    [718, 250, 54],
+                    [660, 298, 54],
+                    [666, 163, 54],
+                    [444, 264, 54],
+                    [827, 449, 54],
+                    [138, 443, 54],
+                    [412, 295, 54],
+                    [422, 363, 54],
+                    [625, 349, 54],
+                    [295, 390, 54],
+                    [223, 366, 54],
+                    [174, 273, 54],
+                    [322, 554, 54]
+                ],
+                ribbon: [480, 704.5, 179.8, 29.02, 3.86]
+            }
+        };
+
+        const CUSTOM_LAYOUTS = {
+            3: {
+                stemOrigin: [352, 505],
+                ribbon: { x: 352, y: 510, width: 120, height: 18, angle: 7 },
+                ribbonTails: [
+                    { x: 344, y: 572, width: 18, height: 134, angle: 2 },
+                    { x: 328, y: 550, width: 16, height: 76, angle: 12 }
+                ],
+                greens: [
+                    { x: 354, y: 275, height: 292, angle: 4, widthScale: 1.28 },
+                    { x: 296, y: 340, height: 250, angle: -24, widthScale: 1.08 },
+                    { x: 418, y: 344, height: 248, angle: 20, widthScale: 1.08 }
+                ],
+                liners: [
+                    { x: 248, y: 202, height: 272, angle: -27, widthScale: 0.75 },
+                    { x: 306, y: 170, height: 306, angle: -11, widthScale: 0.74 },
+                    { x: 470, y: 205, height: 300, angle: 22, widthScale: 0.74 },
+                    { x: 518, y: 312, height: 262, angle: 31, widthScale: 0.7 },
+                    { x: 270, y: 314, height: 238, angle: -19, widthScale: 0.68 }
+                ],
+                secondary: [
+                    { x: 292, y: 395, size: 124 },
+                    { x: 450, y: 230, size: 116 }
+                ],
+                main: [
+                    { x: 390, y: 332, size: 156 }
+                ],
+                filler: [
+                    { x: 214, y: 244, size: 56 },
+                    { x: 268, y: 225, size: 54 },
+                    { x: 326, y: 248, size: 52 },
+                    { x: 492, y: 244, size: 54 },
+                    { x: 536, y: 312, size: 56 },
+                    { x: 486, y: 360, size: 50 },
+                    { x: 298, y: 314, size: 50 },
+                    { x: 342, y: 404, size: 54 },
+                    { x: 232, y: 350, size: 54 },
+                    { x: 445, y: 430, size: 52 }
+                ]
+            },
+            4: {
+                stemOrigin: [360, 495],
+                ribbon: { x: 360, y: 498, width: 116, height: 17, angle: 8 },
+                ribbonTails: [
+                    { x: 358, y: 570, width: 17, height: 134, angle: 1 },
+                    { x: 337, y: 542, width: 16, height: 76, angle: 12 }
+                ],
+                greens: [
+                    { x: 220, y: 322, height: 270, angle: -37, widthScale: 1.2 },
+                    { x: 330, y: 290, height: 286, angle: -8, widthScale: 1.22 },
+                    { x: 448, y: 302, height: 280, angle: 23, widthScale: 1.18 },
+                    { x: 515, y: 365, height: 250, angle: 42, widthScale: 1.06 }
+                ],
+                liners: [
+                    { x: 158, y: 232, height: 250, angle: -44, widthScale: 0.78 },
+                    { x: 272, y: 168, height: 256, angle: -15, widthScale: 0.76 },
+                    { x: 492, y: 160, height: 255, angle: 22, widthScale: 0.76 },
+                    { x: 590, y: 250, height: 244, angle: 42, widthScale: 0.75 },
+                    { x: 205, y: 430, height: 230, angle: -53, widthScale: 0.7 },
+                    { x: 515, y: 445, height: 222, angle: 38, widthScale: 0.7 }
+                ],
+                secondary: [
+                    { x: 118, y: 334, size: 90 },
+                    { x: 188, y: 260, size: 74 },
+                    { x: 268, y: 170, size: 78 },
+                    { x: 410, y: 175, size: 78 },
+                    { x: 515, y: 236, size: 78 },
+                    { x: 575, y: 316, size: 78 },
+                    { x: 452, y: 388, size: 88 },
+                    { x: 282, y: 380, size: 88 }
+                ],
+                main: [
+                    { x: 180, y: 356, size: 132 },
+                    { x: 292, y: 250, size: 126 },
+                    { x: 432, y: 250, size: 126 },
+                    { x: 510, y: 350, size: 120 },
+                    { x: 350, y: 402, size: 160 }
+                ],
+                filler: [
+                    { x: 105, y: 255, size: 58 },
+                    { x: 150, y: 202, size: 54 },
+                    { x: 232, y: 205, size: 56 },
+                    { x: 350, y: 145, size: 60 },
+                    { x: 470, y: 185, size: 56 },
+                    { x: 548, y: 220, size: 58 },
+                    { x: 610, y: 285, size: 56 },
+                    { x: 600, y: 380, size: 54 },
+                    { x: 526, y: 444, size: 56 },
+                    { x: 402, y: 452, size: 58 },
+                    { x: 250, y: 454, size: 54 },
+                    { x: 142, y: 424, size: 54 },
+                    { x: 108, y: 348, size: 52 },
+                    { x: 322, y: 322, size: 54 },
+                    { x: 456, y: 322, size: 54 },
+                    { x: 360, y: 230, size: 52 }
+                ]
+            }
+        };
+
+        const state = {
+            template: 3,
+            main: 'main-yellow',
+            secondary: 'secondary-red',
+            filler: 'filler-red',
+            liner: 'liner-green',
+            green: 'green-blue',
+            outer: 'checker-small',
+            inner: 'soft-gray',
+            ribbon: 'blue'
+        };
+
+        function optionByKey(key, id) {
+            const group = FLOWER_OPTIONS.concat(PACKAGE_OPTIONS).find((item) => item.key === key);
+            return group.options.find((item) => item.id === id);
+        }
+
+        function nameOf(key) {
+            return optionByKey(key, state[key]).name;
+        }
+
+        function colorOf(key) {
+            return optionByKey(key, state[key]).color;
+        }
+
+        function fillOf(key) {
+            const option = optionByKey(key, state[key]);
+            return option.pattern ? `url(#${key}-pattern)` : option.color;
+        }
+
+        function swatchBackground(option) {
+            const backgrounds = {
+                'checker-small': 'repeating-conic-gradient(#111111 0% 25%, #ffffff 0% 50%) 0 0 / 16px 16px',
+                'checker-large': 'repeating-conic-gradient(#111111 0% 25%, #ffffff 0% 50%) 0 0 / 80px 80px',
+                'diagonal-stripe': 'repeating-linear-gradient(135deg, #111111 0 9px, #ffffff 9px 18px)',
+                'dot-grid': 'radial-gradient(circle at center, #9a9a9a 0 2px, transparent 2px) 0 0 / 12px 12px, #ffffff',
+                'checker-soft': 'repeating-conic-gradient(#ededed 0% 25%, #ffffff 0% 50%) 0 0 / 18px 18px',
+                'dot-soft': 'radial-gradient(circle at center, #d0d0d0 0 3px, transparent 3px) 0 0 / 22px 22px, #ffffff'
+            };
+            return option.pattern ? backgrounds[option.pattern] : option.color;
+        }
+
+        const IMAGE_DATA_URLS = {};
+        let imageDataUrlPromise;
+        let useInlineImageHrefs = false;
+
+        function allFlowerImageSources() {
+            const sources = FLOWER_OPTIONS.flatMap((group) => group.options.map((option) => option.image));
+            return [...new Set(sources.filter(Boolean))];
+        }
+
+        function blobToDataUrl(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function preloadImageDataUrls() {
+            if (!imageDataUrlPromise) {
+                imageDataUrlPromise = Promise.all(allFlowerImageSources().map(async (src) => {
+                    try {
+                        const response = await fetch(src);
+                        const blob = await response.blob();
+                        IMAGE_DATA_URLS[src] = await blobToDataUrl(blob);
+                    } catch (error) {
+                        console.warn(`Could not inline ${src}`, error);
+                    }
+                }));
+            }
+            return imageDataUrlPromise;
+        }
+
+        function imageHref(src) {
+            return useInlineImageHrefs ? (IMAGE_DATA_URLS[src] || src) : src;
+        }
+
+        function renderOptionGroup(group, target) {
+            const section = document.createElement('section');
+            section.className = 'option-group';
+            section.style.color = group.color;
+
+            const title = document.createElement('h2');
+            title.textContent = group.title;
+            section.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = 'option-grid';
+
+            group.options.forEach((option) => {
+                const button = document.createElement('button');
+                button.className = 'option-card';
+                button.type = 'button';
+                button.dataset.group = group.key;
+                button.dataset.value = option.id;
+                button.setAttribute('aria-pressed', String(state[group.key] === option.id));
+
+                const media = document.createElement('div');
+                if (option.image) {
+                    media.className = 'option-image';
+                    const image = document.createElement('img');
+                    image.src = option.image;
+                    image.alt = option.name;
+                    media.appendChild(image);
+                } else {
+                    media.className = 'package-swatch';
+                    media.style.background = swatchBackground(option);
+                    if (option.border) media.style.borderColor = option.border;
+                }
+
+                const label = document.createElement('div');
+                label.className = 'option-label';
+
+                const dot = document.createElement('span');
+                dot.className = 'radio-dot';
+                dot.setAttribute('aria-hidden', 'true');
+
+                const name = document.createElement('span');
+                name.className = 'option-name';
+                name.textContent = option.name;
+
+                label.append(dot, name);
+                button.append(media, label);
+                grid.appendChild(button);
+            });
+
+            section.appendChild(grid);
+            target.appendChild(section);
+        }
+
+        function renderControls() {
+            const structureTabs = document.getElementById('structureTabs');
+            for (let index = 1; index <= 4; index += 1) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'structure-tab';
+                button.textContent = String(index);
+                button.dataset.template = String(index);
+                button.setAttribute('aria-label', `Choose bouquet structure ${index}`);
+                structureTabs.appendChild(button);
+            }
+
+            FLOWER_OPTIONS.forEach((group) => renderOptionGroup(group, document.getElementById('flowerGroups')));
+            PACKAGE_OPTIONS.forEach((group) => renderOptionGroup(group, document.getElementById('packageGroups')));
+        }
+
+        function updateControls() {
+            document.querySelectorAll('.structure-tab').forEach((button) => {
+                const isActive = Number(button.dataset.template) === state.template;
+                button.classList.toggle('is-active', isActive);
+                button.setAttribute('aria-pressed', String(isActive));
+            });
+
+            document.querySelectorAll('.option-card').forEach((button) => {
+                const isSelected = state[button.dataset.group] === button.dataset.value;
+                button.classList.toggle('is-selected', isSelected);
+                button.setAttribute('aria-pressed', String(isSelected));
+            });
+        }
+
+        function svgEl(tag, attrs = {}, children = []) {
+            const node = document.createElementNS(SVG_NS, tag);
+            Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+            children.forEach((child) => node.appendChild(child));
+            return node;
+        }
+
+        function buildSvgPattern(id, patternName) {
+            const configs = {
+                'checker-small': { size: 14, dark: '#111111', light: '#ffffff' },
+                'checker-large': { size: 42, dark: '#111111', light: '#ffffff' },
+                'checker-soft': { size: 18, dark: '#e8e8e8', light: '#ffffff' }
+            };
+
+            if (configs[patternName]) {
+                const { size, dark, light } = configs[patternName];
+                const pattern = svgEl('pattern', { id, width: size, height: size, patternUnits: 'userSpaceOnUse' });
+                pattern.appendChild(svgEl('rect', { width: size, height: size, fill: light }));
+                pattern.appendChild(svgEl('rect', { width: size / 2, height: size / 2, fill: dark }));
+                pattern.appendChild(svgEl('rect', { x: size / 2, y: size / 2, width: size / 2, height: size / 2, fill: dark }));
+                return pattern;
+            }
+
+            if (patternName === 'diagonal-stripe') {
+                const pattern = svgEl('pattern', {
+                    id,
+                    width: 28,
+                    height: 28,
+                    patternUnits: 'userSpaceOnUse',
+                    patternTransform: 'rotate(45)'
+                });
+                pattern.appendChild(svgEl('rect', { width: 28, height: 28, fill: '#ffffff' }));
+                pattern.appendChild(svgEl('rect', { width: 10, height: 28, fill: '#111111' }));
+                return pattern;
+            }
+
+            const pattern = svgEl('pattern', { id, width: 22, height: 22, patternUnits: 'userSpaceOnUse' });
+            pattern.appendChild(svgEl('rect', { width: 22, height: 22, fill: '#ffffff' }));
+            pattern.appendChild(svgEl('circle', {
+                cx: 11,
+                cy: 11,
+                r: patternName === 'dot-grid' ? 2.6 : 3.6,
+                fill: patternName === 'dot-grid' ? '#8a8a8a' : '#d0d0d0'
+            }));
+            return pattern;
+        }
+
+        function appendPatternDefs(svg) {
+            const defs = svgEl('defs');
+            ['outer', 'inner'].forEach((key) => {
+                const option = optionByKey(key, state[key]);
+                if (option.pattern) defs.appendChild(buildSvgPattern(`${key}-pattern`, option.pattern));
+            });
+            if (defs.childNodes.length) svg.appendChild(defs);
+        }
+
+        function drawPaperLayer(parent, template, layerName, fill) {
+            const box = template.paper[layerName];
+            const paper = PAPER_PATHS[state.template][layerName];
+            const [, , vbWidth, vbHeight] = paper.viewBox;
+            const group = svgEl('g', {
+                transform: `translate(${box[0]} ${box[1]}) scale(${box[2] / vbWidth} ${box[3] / vbHeight})`
+            });
+            group.appendChild(svgEl('path', {
+                d: paper.d,
+                fill,
+                stroke: '#0400ff',
+                'stroke-width': 1
+            }));
+            parent.appendChild(group);
+        }
+
+        function drawStem(parent, stem) {
+            const [x1, y1, x2, y2, width] = stem;
+            parent.appendChild(svgEl('line', {
+                x1,
+                y1,
+                x2,
+                y2,
+                stroke: '#cdffe8',
+                'stroke-width': width,
+                'stroke-linecap': 'round'
+            }));
+            parent.appendChild(svgEl('line', {
+                x1,
+                y1,
+                x2,
+                y2,
+                stroke: '#0400ff',
+                'stroke-width': 1
+            }));
+        }
+
+        function drawStemToSlot(parent, origin, item, index) {
+            const [x, y, size] = item;
+            const colors = ['#65b64d', '#ff4b55', '#08d4c9', '#a8e000', '#ff7b00'];
+            const endY = y + size * 0.38;
+            parent.appendChild(svgEl('line', {
+                x1: origin[0],
+                y1: origin[1],
+                x2: x,
+                y2: endY,
+                stroke: colors[index % colors.length],
+                'stroke-width': 5,
+                'stroke-linecap': 'round'
+            }));
+        }
+
+        function drawImage(parent, src, x, y, width, height, angle = 0) {
+            const group = svgEl('g', { transform: `translate(${x} ${y}) rotate(${angle})` });
+            const image = svgEl('image', {
+                x: -width / 2,
+                y: -height / 2,
+                width,
+                height,
+                preserveAspectRatio: 'xMidYMid meet'
+            });
+            const href = imageHref(src);
+            image.setAttribute('href', href);
+            image.setAttributeNS(XLINK_NS, 'href', href);
+            group.appendChild(image);
+            parent.appendChild(group);
+        }
+
+        function drawCustomStem(parent, origin, slot, index) {
+            const colors = ['#49cf36', '#65b64d', '#08d4c9', '#7fe600', '#ff6b2a'];
+            parent.appendChild(svgEl('line', {
+                x1: origin[0],
+                y1: origin[1],
+                x2: slot.x,
+                y2: slot.y + (slot.size || slot.height) * 0.18,
+                stroke: colors[index % colors.length],
+                'stroke-width': 3.4,
+                'stroke-linecap': 'round',
+                opacity: 0.78
+            }));
+        }
+
+        function drawCustomRoundSlot(parent, key, slot) {
+            const option = optionByKey(key, state[key]);
+            drawImage(parent, option.image, slot.x, slot.y, slot.size, slot.size, slot.angle || 0);
+        }
+
+        function drawCustomTallSlot(parent, key, slot) {
+            const option = optionByKey(key, state[key]);
+            const width = slot.height * (180 / 374) * (slot.widthScale || 1);
+            drawImage(parent, option.image, slot.x, slot.y, width, slot.height, slot.angle || 0);
+        }
+
+        function drawCustomRibbonPiece(parent, piece) {
+            const group = svgEl('g', { transform: `translate(${piece.x} ${piece.y}) rotate(${piece.angle || 0})` });
+            group.appendChild(svgEl('rect', {
+                x: -piece.width / 2,
+                y: -piece.height / 2,
+                width: piece.width,
+                height: piece.height,
+                fill: colorOf('ribbon'),
+                stroke: '#0400ff',
+                'stroke-width': 1,
+                rx: 1.5
+            }));
+            parent.appendChild(group);
+        }
+
+        function drawCustomBouquetSvg(svg, template, layout) {
+            const paper = svgEl('g', { transform: `scale(${template.scale})` });
+            drawPaperLayer(paper, template, 'outer', fillOf('outer'));
+            drawPaperLayer(paper, template, 'inner', fillOf('inner'));
+            svg.appendChild(paper);
+
+            const bouquet = svgEl('g');
+            layout.greens.forEach((slot) => drawCustomTallSlot(bouquet, 'green', slot));
+            layout.liners.forEach((slot) => drawCustomTallSlot(bouquet, 'liner', slot));
+
+            const stemSlots = layout.secondary.concat(layout.main, layout.filler);
+            stemSlots.forEach((slot, index) => drawCustomStem(bouquet, layout.stemOrigin, slot, index));
+
+            layout.secondary.forEach((slot) => drawCustomRoundSlot(bouquet, 'secondary', slot));
+            layout.main.forEach((slot) => drawCustomRoundSlot(bouquet, 'main', slot));
+            layout.filler.forEach((slot) => drawCustomRoundSlot(bouquet, 'filler', slot));
+            layout.ribbonTails.forEach((piece) => drawCustomRibbonPiece(bouquet, piece));
+            drawCustomRibbonPiece(bouquet, layout.ribbon);
+            svg.appendChild(bouquet);
+        }
+
+        function drawRoundImageSlot(parent, key, item) {
+            const [x, y, size] = item;
+            const multipliers = {
+                main: 1.45,
+                secondary: 1.32,
+                filler: 1.55
+            };
+            const option = optionByKey(key, state[key]);
+            const drawnSize = size * multipliers[key];
+            drawImage(parent, option.image, x, y, drawnSize, drawnSize);
+        }
+
+        function drawTallImageSlot(parent, key, item) {
+            const [x, y, , height, angle] = item;
+            const option = optionByKey(key, state[key]);
+            const drawnHeight = height * (key === 'green' ? 1.08 : 1.12);
+            const naturalWidth = drawnHeight * (180 / 374);
+            const drawnWidth = naturalWidth * (key === 'green' ? 1.08 : 0.72);
+            drawImage(parent, option.image, x, y, drawnWidth, drawnHeight, angle);
+        }
+
+        function drawRibbon(parent, ribbon) {
+            const [x, y, width, height, angle] = ribbon;
+            const group = svgEl('g', { transform: `translate(${x} ${y}) rotate(${angle})` });
+            group.appendChild(svgEl('rect', {
+                x: -width / 2,
+                y: -height / 2,
+                width,
+                height,
+                fill: colorOf('ribbon'),
+                stroke: '#0400ff',
+                'stroke-width': 1,
+                rx: 1.5
+            }));
+            parent.appendChild(group);
+        }
+
+        function drawBouquetSvg() {
+            const svg = document.getElementById('bouquetSvg');
+            svg.replaceChildren();
+            svg.appendChild(svgEl('rect', { width: 653, height: 653, fill: '#ffffff' }));
+            appendPatternDefs(svg);
+
+            const template = TEMPLATES[state.template];
+            const customLayout = CUSTOM_LAYOUTS[state.template];
+            if (customLayout) {
+                drawCustomBouquetSvg(svg, template, customLayout);
+                return;
+            }
+
+            const art = svgEl('g', { transform: `scale(${template.scale})` });
+
+            drawPaperLayer(art, template, 'outer', fillOf('outer'));
+            drawPaperLayer(art, template, 'inner', fillOf('inner'));
+
+            template.stems.forEach((stem) => drawStem(art, stem));
+            const stemOrigin = [template.ribbon[0], template.ribbon[1] + 10];
+            template.secondary.forEach((item, index) => drawStemToSlot(art, stemOrigin, item, index));
+            template.main.forEach((item, index) => drawStemToSlot(art, stemOrigin, item, index + 2));
+            template.filler.forEach((item, index) => drawStemToSlot(art, stemOrigin, item, index + 5));
+            template.greens.forEach((item) => drawTallImageSlot(art, 'green', item));
+            template.liners.forEach((item) => drawTallImageSlot(art, 'liner', item));
+            template.secondary.forEach((item) => drawRoundImageSlot(art, 'secondary', item));
+            template.main.forEach((item) => drawRoundImageSlot(art, 'main', item));
+            template.filler.forEach((item) => drawRoundImageSlot(art, 'filler', item));
+            drawRibbon(art, template.ribbon);
+
+            svg.appendChild(art);
+        }
+
+        function updateSelectedCopy() {
+            const lines = [
+                'Selected:',
+                `${nameOf('main')}, ${nameOf('secondary')}, ${nameOf('filler')}`,
+                `${nameOf('liner')}, ${nameOf('green')}`,
+                `${nameOf('outer')} Wrapping Paper, ${nameOf('inner')} Inner, ${nameOf('ribbon')} Ribbon`
+            ];
+            document.getElementById('selectedCopy').textContent = lines.join('\n');
+        }
+
+        function render() {
+            updateControls();
+            drawBouquetSvg();
+            updateSelectedCopy();
+            document.getElementById('shareStatus').textContent = '';
+        }
+
+        function hydrateFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            Object.keys(state).forEach((key) => {
+                const value = params.get(key);
+                if (!value) return;
+                if (key === 'template') {
+                    const templateValue = Number(value);
+                    if (TEMPLATES[templateValue]) state.template = templateValue;
+                    return;
+                }
+                const option = optionByKey(key, value);
+                if (option) state[key] = value;
+            });
+        }
+
+        function buildShareUrl() {
+            const params = new URLSearchParams();
+            Object.entries(state).forEach(([key, value]) => params.set(key, value));
+            return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+        }
+
+        async function saveImage() {
+            await preloadImageDataUrls();
+            useInlineImageHrefs = true;
+            drawBouquetSvg();
+
+            const sourceSvg = document.getElementById('bouquetSvg').cloneNode(true);
+            sourceSvg.setAttribute('xmlns', SVG_NS);
+            sourceSvg.setAttribute('xmlns:xlink', XLINK_NS);
+            sourceSvg.setAttribute('width', '1000');
+            sourceSvg.setAttribute('height', '1000');
+            useInlineImageHrefs = false;
+            drawBouquetSvg();
+
+            const serialized = new XMLSerializer().serializeToString(sourceSvg);
+            const svgBlob = new Blob([serialized], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            const image = new Image();
+
+            image.onload = () => {
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = 1000;
+                exportCanvas.height = 1000;
+                const exportCtx = exportCanvas.getContext('2d');
+                exportCtx.fillStyle = '#ffffff';
+                exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+                exportCtx.drawImage(image, 0, 0, exportCanvas.width, exportCanvas.height);
+                URL.revokeObjectURL(url);
+
+                exportCanvas.toBlob((blob) => {
+                    if (!blob) return;
+                    const link = document.createElement('a');
+                    const pngUrl = URL.createObjectURL(blob);
+                    link.href = pngUrl;
+                    link.download = `tasaro-bouquet-${Date.now()}.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(pngUrl);
+                }, 'image/png');
+            };
+
+            image.src = url;
+        }
+
+        async function shareLink() {
+            const shareUrl = buildShareUrl();
+            const status = document.getElementById('shareStatus');
+
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                status.textContent = 'Link copied.';
+            } catch (error) {
+                window.prompt('Copy this link:', shareUrl);
+                status.textContent = 'Share link is ready.';
+            }
+        }
+
+        renderControls();
+        hydrateFromUrl();
+        render();
+        preloadImageDataUrls();
+
+        document.addEventListener('click', (event) => {
+            const structureButton = event.target.closest('.structure-tab');
+            if (structureButton) {
+                state.template = Number(structureButton.dataset.template);
+                render();
+                return;
+            }
+
+            const optionButton = event.target.closest('.option-card');
+            if (optionButton) {
+                state[optionButton.dataset.group] = optionButton.dataset.value;
+                render();
+            }
+        });
+
+        document.getElementById('saveImage').addEventListener('click', saveImage);
+        document.getElementById('shareLink').addEventListener('click', shareLink);
+    </script>
+</body>
+</html>

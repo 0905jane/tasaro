@@ -6,7 +6,7 @@
     <title>Tasaro - Start Creating</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600&family=Red+Rose:wght@400&display=swap" rel="stylesheet">
     <style>
         /* 기본 리셋 */
         * {
@@ -15,98 +15,143 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --tasaro-red: #ff0000;
+            --sky: #10dfff;
+            --soft-sky: #a6f3ff;
+        }
+
+        html,
         body {
-            font-family: 'Pretendard', sans-serif;
-            /* 피그마에서 추출한 하늘색 그라데이션 수치 완벽 반영 */
-            background: linear-gradient(180deg, #10DFFF 0%, #A6F3FF 3%, #FFF 6.74%);
-            background-attachment: fixed;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Pretendard', Arial, sans-serif;
+            color: var(--tasaro-red);
+            background: linear-gradient(180deg, var(--sky) 0%, var(--soft-sky) 3%, #fff 6.741%);
             overflow: hidden;
         }
 
-        /* 메인 컨테이너 */
-        .intro-container {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* 화면 등장 시 부드러운 페이드인 애니메이션 */
-            animation: fadeInEffect 1.5s ease-out;
+        .intro-page {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
         }
 
-        /* 로고 영역 스타일 */
-        .logo-container {
-            margin-bottom: 20px;
-        }
-        .logo-container img {
-            width: 350px; /* 로고가 대문에서 시원하게 보이도록 크기 지정 */
-            height: auto;
-            display: block;
-        }
-
-        /* 슬로건 박스 스타일 (피그마 디자인의 하늘색 테두리 상자) */
-        .slogan-box {
-            border: 1px solid #ffffff;
-            padding: 6px 20px;
-            margin-bottom: 240px; /* 로고군과 하단 버튼 사이의 넓은 여백 구현 */
-            background-color: transparent;
+        .brand {
+            position: absolute;
+            top: 0;
+            left: calc(50% - 168px);
+            color: var(--tasaro-red);
+            font-family: 'Red Rose', serif;
+            font-size: 100px;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: 0;
+            white-space: nowrap;
         }
 
-        .slogan-text {
-            color: #E60000; /* 피그마에 지정된 강렬하고 감성적인 레드 텍스트 */
+        .intro-content {
+            position: absolute;
+            inset: 0;
+        }
+
+        .intro-copy {
+            position: absolute;
+            top: 529px;
+            left: calc(50% - 555px);
+            color: var(--tasaro-red);
             font-size: 20px;
             font-weight: 400;
-            letter-spacing: -0.5px;
+            line-height: normal;
+            white-space: nowrap;
         }
 
-        /* 시작하기 버튼 스타일 (둥근 하늘색 테두리 버튼) */
         .start-btn {
-            display: inline-block;
-            text-decoration: none;
-            border: 1px solid #10DFFF;
-            padding: 16px 64px;
-            border-radius: 50px; /* 완전한 알약 형태의 라운딩 */
-            background-color: #fff;
-            color: #E60000; /* 레드 텍스트 */
-            font-size: 24px;
+            position: absolute;
+            top: calc(50% + 0.5px);
+            left: calc(50% + 396px);
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 40px;
+            border: 1px solid var(--tasaro-red);
+            border-radius: 50px;
+            background: #fff;
+            color: var(--tasaro-red);
+            font-size: 20px;
             font-weight: 400;
-            transition: all 0.2s ease-in-out;
+            line-height: normal;
+            text-decoration: none;
+            white-space: nowrap;
             cursor: pointer;
+            transition: background 160ms ease, transform 160ms ease;
         }
 
-        /* 버튼 마우스 호버 효과 */
         .start-btn:hover {
-            background-color: #f0fbff; /* 살짝 푸른빛이 도는 화이트로 변경 */
-            transform: scale(1.02); /* 미세하게 커지는 효과 */
-            box-shadow: 0 4px 15px rgba(16, 223, 255, 0.2); /* 은은한 하늘색 그림자 */
+            background: #fffafa;
+            transform: translate(-50%, -50%) translateY(-1px);
         }
 
-        /* 애니메이션 키프레임 */
-        @keyframes fadeInEffect {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .start-btn:focus-visible {
+            outline: 3px solid rgba(16, 223, 255, 0.65);
+            outline-offset: 5px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                overflow: auto;
+            }
+
+            .intro-page {
+                min-height: 100svh;
+            }
+
+            .brand {
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: clamp(64px, 22vw, 100px);
+            }
+
+            .intro-copy {
+                top: auto;
+                left: 28px;
+                bottom: 192px;
+                max-width: calc(100vw - 56px);
+                font-size: 18px;
+                white-space: normal;
+            }
+
+            .start-btn {
+                top: auto;
+                left: 28px;
+                bottom: 90px;
+                transform: none;
+                padding: 18px 38px;
+                font-size: 20px;
+            }
+
+            .start-btn:hover {
+                transform: translateY(-1px);
+            }
         }
     </style>
 </head>
 <body>
+    <main class="intro-page" aria-labelledby="page-title">
+        <h1 class="brand" id="page-title">Tasaro</h1>
 
-    <div class="intro-container">
-        <div class="logo-container">
-            <img src="images/tasaro_logo.png" alt="Tasaro Logo">
-        </div>
+        <section class="intro-content" aria-label="Start creating your bouquet">
+            <p class="intro-copy">
+                is your personal online flower shop.<br>
+                Build a bouquet full of your style.
+            </p>
 
-        <div class="slogan-box">
-            <p class="slogan-text">is your personal online flower shop. Build a bouquet full of your style.</p>
-        </div>
-
-        <a href="index.html" class="start-btn">
-            Start Creating
-        </a>
-    </div>
+            <a href="builder.html" class="start-btn">Start Creating</a>
+        </section>
+    </main>
 
 </body>
 </html>
